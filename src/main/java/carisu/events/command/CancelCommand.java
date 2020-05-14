@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Value
-public class CancelCommand {
+public class CancelCommand implements Command {
     UUID item;
     Instant when;
 }

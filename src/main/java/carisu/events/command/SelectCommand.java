@@ -9,5 +9,4 @@ import java.util.UUID;
 public class SelectCommand implements Command {
     UUID item;
     Instant when;
-    int holdHours;
 }
