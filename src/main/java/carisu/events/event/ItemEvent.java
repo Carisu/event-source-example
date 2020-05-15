@@ -1,6 +1,5 @@
 package carisu.events.event;
 
-import carisu.events.aggregate.Item;
 import io.vavr.control.Option;
 import lombok.Value;
 

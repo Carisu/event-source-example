@@ -6,11 +6,9 @@ import carisu.events.event.ItemEvent;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 
-import java.util.UUID;
-
-public class NewItem extends Item {
-    public NewItem(UUID id) {
-        super(id);
+public class CancelItem extends Item {
+    public CancelItem(Item previous, ItemEvent event) {
+        super(previous, event);
     }
 
     @Override

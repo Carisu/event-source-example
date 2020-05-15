@@ -26,7 +26,7 @@ public enum ItemState {
     private final String code;
     private final Class<? extends Command> command;
     private final Function2<Item, ItemEvent, Option<Item>> applyEventFunction;
-    private final Function3<Item, Command, EventStore, EventStore> applyCommandFunction;
+    private final Function3<Item, Command, EventStore, Try<EventStore>> applyCommandFunction;
 
     public static Try<ItemState> of(String code) {
         return of(i -> i.code.equals(code), code, "state code");
@@ -44,7 +44,7 @@ public enum ItemState {
         return new ItemEvent(itemId, UUID.randomUUID(), commandTimeStamp, Instant.now(), code, Option.none());
     }
 
-    public ItemEvent create(UUID itemId, Instant commandTimeStamp, int hoursTimeout) {
+    public ItemEvent create(UUID itemId, Instant commandTimeStamp, long hoursTimeout) {
         Instant eventTime = Instant.now();
         return new ItemEvent(itemId, UUID.randomUUID(), commandTimeStamp, eventTime, code, Option.of(eventTime.plus(hoursTimeout, ChronoUnit.HOURS)));
     }
@@ -53,7 +53,7 @@ public enum ItemState {
         return applyEventFunction.apply(item, event);
     }
 
-    public EventStore apply(Item item, Command command, EventStore eventStore) {
+    public Try<EventStore> apply(Item item, Command command, EventStore eventStore) {
         return applyCommandFunction.apply(item, command, eventStore);
     }
 }

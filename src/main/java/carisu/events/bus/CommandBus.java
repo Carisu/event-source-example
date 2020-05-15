@@ -1,12 +1,13 @@
 package carisu.events.bus;
 
 import carisu.events.command.Command;
-import io.vavr.collection.*;
-import io.vavr.control.Option;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.List;
+import io.vavr.collection.Map;
+import io.vavr.collection.Stream;
 import io.vavr.control.Try;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 

@@ -1,11 +1,8 @@
 package carisu.events.event;
 
-import carisu.events.aggregate.Item;
 import io.vavr.collection.List;
 import io.vavr.collection.Stream;
 import io.vavr.control.Try;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 public class EventStore {
     private final List<ItemEvent> events;

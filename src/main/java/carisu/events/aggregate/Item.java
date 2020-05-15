@@ -1,12 +1,11 @@
 package carisu.events.aggregate;
 
-import carisu.events.bus.AcceptCommand;
 import carisu.events.command.CancelCommand;
 import carisu.events.command.Command;
 import carisu.events.command.PurchaseCommand;
+import carisu.events.command.SelectCommand;
 import carisu.events.event.EventStore;
 import carisu.events.event.ItemEvent;
-import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -17,18 +16,21 @@ import java.util.UUID;
 
 
 @Data
-@EqualsAndHashCode(exclude={"state", "events"})
+@EqualsAndHashCode(exclude={"events"})
 public abstract class Item {
     private final UUID id;
     private final List<ItemEvent> events;
+
+    protected static final long DEFAULT_TIMEOUT_HOURS = 24;
 
     protected Item(UUID id) {
         this.id = id;
         this.events = List.empty();
     }
 
-    public static Item init(UUID id) {
-        return new NewItem(id);
+    protected Item(Item previous, ItemEvent event) {
+        this.id = previous.id;
+        this.events = previous.events.append(event);
     }
 
     public Try<Item> apply(ItemEvent event) {
@@ -39,18 +41,53 @@ public abstract class Item {
 
     public Try<EventStore> apply(Command command, EventStore store) {
         return ItemState.of(command.getClass())
-                .map(s -> s.apply(this, command, store));
+                .flatMap(s -> s.apply(this, command, store));
     }
 
-    public abstract Option<Item> selectEvent(ItemEvent event);
+    protected Option<Item> ignoreEvent() {
+        return Option.none();
+    }
 
-    public abstract Option<Item> purchaseEvent(ItemEvent event);
+    protected Try<EventStore> ignoreCommand(EventStore eventStore) {
+        return Option.of(eventStore).toTry();
+    }
 
-    public abstract Option<Item> cancelEvent(ItemEvent event);
+    public Option<Item> selectEvent(ItemEvent event) {
+        return ignoreEvent();
+    }
 
-    public abstract EventStore selectCommand(Command command, EventStore eventStore);
+    public Option<Item> purchaseEvent(ItemEvent event) {
+        return ignoreEvent();
+    }
 
-    public abstract EventStore purchaseCommand(Command command, EventStore eventStore);
+    public Option<Item> cancelEvent(ItemEvent event) {
+        return ignoreEvent();
+    }
 
-    public abstract EventStore cancelCommand(Command command, EventStore eventStore);
+    public final Try<EventStore> selectCommand(Command command, EventStore eventStore) {
+        return Try.of(() -> (SelectCommand)command)
+                .flatMap(c -> selectCommand(c, eventStore));
+    }
+
+    public final Try<EventStore> purchaseCommand(Command command, EventStore eventStore) {
+        return Try.of(() -> (PurchaseCommand)command)
+                .flatMap(c -> purchaseCommand(c, eventStore));
+    }
+
+    public final Try<EventStore> cancelCommand(Command command, EventStore eventStore) {
+        return Try.of(() -> (CancelCommand)command)
+                .flatMap(c -> cancelCommand(c, eventStore));
+    }
+
+    protected Try<EventStore> selectCommand(SelectCommand command, EventStore eventStore) {
+        return ignoreCommand(eventStore);
+    }
+
+    protected Try<EventStore> purchaseCommand(PurchaseCommand command, EventStore eventStore) {
+        return ignoreCommand(eventStore);
+    }
+
+    protected Try<EventStore> cancelCommand(CancelCommand command, EventStore eventStore) {
+        return ignoreCommand(eventStore);
+    }
 }

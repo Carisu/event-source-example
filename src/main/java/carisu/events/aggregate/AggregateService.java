@@ -5,7 +5,6 @@ import carisu.events.command.Command;
 import carisu.events.event.EventStore;
 import carisu.events.event.ItemEvent;
 import io.vavr.Tuple;
-import io.vavr.Tuple2;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.control.Try;
@@ -17,7 +16,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class AggregateService implements AcceptCommand {
-    private EventStore internalEventStore = EventStore.init();
+    private final EventStore internalEventStore = EventStore.init();
 
     public Try<EventStore> acceptCommand(Command command) {
         return acceptCommand(command, internalEventStore);
@@ -25,16 +24,16 @@ public class AggregateService implements AcceptCommand {
 
     public Try<EventStore> acceptCommand(Command command, EventStore eventStore) {
         return aggregate(eventStore)
-                .map(m -> m.get(command.getItem())
-                        .getOrElse(Item.init(command.getItem()))
+                .flatMap(m -> m.get(command.getItem())
+                        .getOrElse(new NewItem(command.getItem()))
                         .apply(command, eventStore));
     }
 
-    public Try<Map<UUID, ? extends Item>> aggregate(EventStore eventStore) {
+    public Try<Map<UUID, Item>> aggregate(EventStore eventStore) {
         return eventStore.getEventStream()
                 .map(as -> as.groupBy(ItemEvent::getItemId)
                 .flatMap((u, es) -> List.of(Tuple.of(u,
-                        es.collect(() -> Ite.init(u), Item::apply, (i1, i2) -> {
+                        es.collect(() -> new NewItem(u), Item::apply, (i1, i2) -> {
                             throw new RuntimeException("Cannot combine items");
                         })))));
     }
