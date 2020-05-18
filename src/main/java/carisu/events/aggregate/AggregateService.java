@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class AggregateService implements AcceptCommand {
+public class AggregateService implements AcceptCommand<EventStore> {
     private final EventStore internalEventStore = EventStore.init();
 
     public Try<EventStore> acceptCommand(Command command) {
@@ -24,8 +24,8 @@ public class AggregateService implements AcceptCommand {
 
     public Try<EventStore> acceptCommand(Command command, EventStore eventStore) {
         return aggregate(eventStore)
-                .flatMap(m -> m.get(command.getItem())
-                        .getOrElse(new NewItem(command.getItem()))
+                .flatMap(m -> m.get(command.getItemId())
+                        .getOrElse(new NewItem(command.getItemId()))
                         .apply(command, eventStore));
     }
 

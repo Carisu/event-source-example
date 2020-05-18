@@ -40,13 +40,13 @@ public enum ItemState {
         return Stream.of(ItemState.values()).find(check).toTry(() -> new RuntimeException(value + " is not a valid " + thing));
     }
 
-    public ItemEvent create(UUID itemId, Instant commandTimeStamp) {
-        return new ItemEvent(itemId, UUID.randomUUID(), commandTimeStamp, Instant.now(), code, Option.none());
+    public ItemEvent create(UUID itemId, Instant commandTimestamp) {
+        return new ItemEvent(itemId, UUID.randomUUID(), commandTimestamp, Instant.now(), code, Option.none());
     }
 
-    public ItemEvent create(UUID itemId, Instant commandTimeStamp, long hoursTimeout) {
+    public ItemEvent create(UUID itemId, Instant commandTimestamp, long eventTimeoutHours) {
         Instant eventTime = Instant.now();
-        return new ItemEvent(itemId, UUID.randomUUID(), commandTimeStamp, eventTime, code, Option.of(eventTime.plus(hoursTimeout, ChronoUnit.HOURS)));
+        return new ItemEvent(itemId, UUID.randomUUID(), commandTimestamp, eventTime, code, Option.of(eventTime.plus(eventTimeoutHours, ChronoUnit.HOURS)));
     }
 
     public Option<Item> apply(Item item, ItemEvent event) {

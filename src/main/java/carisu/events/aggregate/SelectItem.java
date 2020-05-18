@@ -24,11 +24,11 @@ public class SelectItem extends Item {
 
     @Override
     protected Try<EventStore> purchaseCommand(PurchaseCommand command, EventStore eventStore) {
-        return eventStore.addEvent(ItemState.PURCHASED.create(command.getItem(), command.getWhen()));
+        return eventStore.addEvent(ItemState.PURCHASED.create(command.getItemId(), command.getCommandTimestamp()));
     }
 
     @Override
     protected Try<EventStore> cancelCommand(CancelCommand command, EventStore eventStore) {
-        return eventStore.addEvent(ItemState.CANCELLED.create(command.getItem(), command.getWhen()));
+        return eventStore.addEvent(ItemState.CANCELLED.create(command.getItemId(), command.getCommandTimestamp()));
     }
 }

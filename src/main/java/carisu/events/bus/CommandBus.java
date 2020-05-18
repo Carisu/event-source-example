@@ -17,7 +17,7 @@ public class CommandBus {
     private Map<UUID, List<Command>> commands = HashMap.empty();
 
     public Try<CommandBus> addCommand(Command command) {
-        UUID item = command.getItem();
+        UUID item = command.getItemId();
         commands = commands.put(item, commands.get(item).getOrElse(List.empty()).append(command));
         return Try.of(() -> this);
     }

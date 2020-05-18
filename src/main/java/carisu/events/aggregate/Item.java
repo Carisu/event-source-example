@@ -39,9 +39,9 @@ public abstract class Item {
                 .getOrElse(this));
     }
 
-    public Try<EventStore> apply(Command command, EventStore store) {
+    public Try<EventStore> apply(Command command, EventStore eventStore) {
         return ItemState.of(command.getClass())
-                .flatMap(s -> s.apply(this, command, store));
+                .flatMap(s -> s.apply(this, command, eventStore));
     }
 
     protected Option<Item> ignoreEvent() {
