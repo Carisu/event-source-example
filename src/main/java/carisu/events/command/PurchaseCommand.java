@@ -7,6 +7,6 @@ import java.util.UUID;
 
 @Value
 public class PurchaseCommand implements Command {
-    UUID item;
-    Instant when;
+    UUID itemId;
+    Instant commandTimestamp;
 }

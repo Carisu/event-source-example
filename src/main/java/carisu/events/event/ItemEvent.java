@@ -10,8 +10,8 @@ import java.util.UUID;
 public class ItemEvent {
     UUID itemId;
     UUID eventId;
-    Instant commandTimeStamp;
-    Instant eventTimeStamp;
+    Instant commandTimestamp;
+    Instant eventTimestamp;
     String eventCode;
-    Option<Instant> eventTimeoutHours;
+    Option<Instant> eventTimeoutTimestamp;
 }

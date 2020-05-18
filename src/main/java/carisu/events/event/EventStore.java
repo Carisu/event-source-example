@@ -20,6 +20,6 @@ public class EventStore {
     }
 
     public Try<Stream<ItemEvent>> getEventStream() {
-        return Try.of(() -> events.toStream());
+        return Try.of(events::toStream);
     }
 }

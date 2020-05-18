@@ -13,16 +13,16 @@ import java.util.UUID;
 public class CommandService {
     private final CommandBus commandBus;
 
-    public Try<CommandService> selectItem(UUID item) {
-        return issueCommand(new SelectCommand(item, Instant.now()));
+    public Try<CommandService> selectItem(UUID itemId) {
+        return issueCommand(new SelectCommand(itemId, Instant.now()));
     }
 
-    public Try<CommandService> purchaseItem(UUID item) {
-        return issueCommand(new PurchaseCommand(item, Instant.now()));
+    public Try<CommandService> purchaseItem(UUID itemId) {
+        return issueCommand(new PurchaseCommand(itemId, Instant.now()));
     }
 
-    public Try<CommandService> cancelItem(UUID item) {
-        return issueCommand(new CancelCommand(item, Instant.now()));
+    public Try<CommandService> cancelItem(UUID itemId) {
+        return issueCommand(new CancelCommand(itemId, Instant.now()));
     }
 
     private Try<CommandService> issueCommand(Command command) {

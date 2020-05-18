@@ -7,6 +7,6 @@ import java.util.UUID;
 
 @Value
 public class CancelCommand implements Command {
-    UUID item;
-    Instant when;
+    UUID itemId;
+    Instant commandTimestamp;
 }

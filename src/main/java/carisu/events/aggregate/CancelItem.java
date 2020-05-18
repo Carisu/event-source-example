@@ -18,6 +18,6 @@ public class CancelItem extends Item {
 
     @Override
     protected Try<EventStore> selectCommand(SelectCommand command, EventStore eventStore) {
-        return eventStore.addEvent(ItemState.SELECTED.create(command.getItem(), command.getWhen(), DEFAULT_TIMEOUT_HOURS));
+        return eventStore.addEvent(ItemState.SELECTED.create(command.getItemId(), command.getCommandTimestamp(), DEFAULT_TIMEOUT_HOURS));
     }
 }
